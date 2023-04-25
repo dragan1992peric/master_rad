@@ -1,7 +1,9 @@
 global using VTSMASTER.Shared;
 global using Microsoft.EntityFrameworkCore;
 global using VTSMASTER.Server.Data;
+global using VTSMASTER.Server.Services.ProductService;
 using Microsoft.AspNetCore.ResponseCompression;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,8 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
