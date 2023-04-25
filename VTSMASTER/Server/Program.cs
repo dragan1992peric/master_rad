@@ -2,6 +2,7 @@ global using VTSMASTER.Shared;
 global using Microsoft.EntityFrameworkCore;
 global using VTSMASTER.Server.Data;
 global using VTSMASTER.Server.Services.ProductService;
+global using VTSMASTER.Server.Services.CategoryService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 
@@ -21,6 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
