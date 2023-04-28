@@ -3,7 +3,7 @@
 
 @if (product == null)
 {
-	<span>@message</span>
+	<span id="ttestt">@message</span>
 }
 else
 {
@@ -50,7 +50,7 @@ else
 
 	protected override async Task OnParametersSetAsync()
 	{
-		message = "Loading product...";
+		message = "Loading Product...";
 		var result = await ProductService.GetProduct(Id);
 		if (!result.Success)
 		{
