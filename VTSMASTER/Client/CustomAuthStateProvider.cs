@@ -17,7 +17,7 @@ namespace VTSMASTER.Client
         }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
 		{
-			string authToken = await _localStorageService.GetItemAsStringAsync("AuthToken");
+			string authToken = await _localStorageService.GetItemAsStringAsync("authToken");
 
 			var identity = new ClaimsIdentity();
 			_http.DefaultRequestHeaders.Authorization = null;
@@ -27,7 +27,7 @@ namespace VTSMASTER.Client
 				try
 				{
 					identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
-					_http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.Replace("\"",""));
+					_http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken.Replace("\"", ""));
 				}
 				catch
 				{
