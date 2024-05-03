@@ -1,0 +1,13 @@
+﻿@inject NavigationManager NavigationManager
+
+<button @onclick="GoToHome"
+	class="btn btn-outline-primary home-button"> 
+	Шопић
+</button>
+
+@code {
+	private void GoToHome()
+	{
+		NavigationManager.NavigateTo("");
+	}
+}
