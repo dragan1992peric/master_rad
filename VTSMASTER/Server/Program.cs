@@ -5,6 +5,7 @@ global using VTSMASTER.Server.Services.ProductService;
 global using VTSMASTER.Server.Services.CategoryService;
 global using VTSMASTER.Server.Services.CartService;
 global using VTSMASTER.Server.Services.AuthService;
+global using VTSMASTER.Server.Services.OrderService;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     { 
