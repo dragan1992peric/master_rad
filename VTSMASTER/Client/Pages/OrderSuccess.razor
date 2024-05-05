@@ -1,0 +1,16 @@
+﻿@page "/order-success"
+@inject ICartService CartService
+
+
+<PageTitle>Хвала</PageTitle>
+
+<h3>Хвала</h3>
+
+<span>Хвала на поруџбини. Можете је погледати <a href="orders">овде</a></span>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await CartService.GetCartItemsCount();
+    }
+}

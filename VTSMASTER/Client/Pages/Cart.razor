@@ -1,15 +1,13 @@
 ﻿@page "/cart"
 @inject ICartService CartService
 @inject IOrderService OrderService
+@inject NavigationManager NavigationManager
 
 <PageTitle>ТВОЈА КОРПА</PageTitle>
 <h3>ТВОЈА КОРПА</h3>
 
 @if(cartProducts == null || cartProducts.Count == 0){
 	<span>@message</span>
-}
-else if(orderPlaced){
-	<span>Хвала на поруџбини!!!! Можеш погледати воје поруџбе <a href="orders">овде</a></span>
 }
 else
 {
@@ -44,11 +42,9 @@ else
 @code {
 	List<CartProductResponse> cartProducts = null;
 	string message = "Учитава се корпа...";
-	bool orderPlaced = false;
 
 	protected override async Task OnInitializedAsync()
 	{
-		orderPlaced = false;
 		await LoadCart();
 	}
 
@@ -80,9 +76,8 @@ else
 
 	private async Task PlaceOrder()
 	{
-		await OrderService.PlaceOrder();
-		await CartService.GetCartItemsCount();
-		orderPlaced = true;
+		string url = await OrderService.PlaceOrder();
+		NavigationManager.NavigateTo(url);
 	}
 
 }
