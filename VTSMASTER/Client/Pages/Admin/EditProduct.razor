@@ -31,8 +31,31 @@ else
             <label for="imageUrl">imageUrl</label>
             <InputText id="imageUrl" @bind-Value="product.ImageUrl" class="form-control"></InputText>
         </div>
+        <div class="mb-0" style="display: flex; flex-wrap: wrap; flex-direction: row; justify-content: center;">
+            @if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                <img src="@product.ImageUrl" />
+            }
+            else
+            {
+                foreach (var image in product.Image)
+                {
+                    @*<img src="@image.Data" />
+                    <button type="button" @onclick="(() => RemoveImage(image.Id))">уклони</button>*@
+                    <MudCard Class="ma-2">
+                        <MudCardContent>
+                            <MudImage Src="@image.Data" />
+                        </MudCardContent>
+                        <MudCardActions Style="justify-content:center;">
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => RemoveImage(image.Id))">Уклони</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                }
+            }
+        </div>
         <div class="mb-0">
-            <img src="@product.ImageUrl" />
+            <label for="images">Слике</label>
+            <InputFile id="images" OnChange="OnFileChange" multiple class="form-control"></InputFile>
         </div>
         <div class="mb-0">
             <label for="description">Опис</label>
@@ -190,8 +213,30 @@ else
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Да ли желите да обришете '{product.Title}'?");
         if(confirmed)
         {
-        await ProductService.DeleteProduct(product);
-        NavigationManager.NavigateTo("admin/products");
+            await ProductService.DeleteProduct(product);
+            NavigationManager.NavigateTo("admin/products");
+        }
+    }
+
+    async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        foreach (var image in e.GetMultipleFiles(int.MaxValue))
+        {
+            var resizedImage = await image.RequestImageFileAsync(format, 200, 200);
+            var buffer = new byte[resizedImage.Size];
+            await resizedImage.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            product.Image.Add(new Image { Data = imageData });
+        }
+    }
+
+    void RemoveImage(int id)
+    {
+        var image = product.Image.FirstOrDefault(i => i.Id == id);
+        if (image != null)
+        {
+            product.Image.Remove(image);
         }
     }
 }
