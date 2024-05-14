@@ -1,0 +1,21 @@
+﻿@inject ICarouselService CarouselService
+
+<div class="container">
+
+    <MudCarousel Class="mud-width-full" ItemsSource="CarouselService.Carousels" Style="height: 400px; width: 950px;">
+        <ItemTemplate>
+            <MudImage Src="@context.Karosel"></MudImage>
+        </ItemTemplate>
+    </MudCarousel>
+
+</div>
+
+@code{
+    private List<HomeCarousel> karo = new List<HomeCarousel>();
+    private HomeCarousel? homeKaro = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarouselService.GetCarousels();
+    }
+}

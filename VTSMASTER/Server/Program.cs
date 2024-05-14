@@ -9,6 +9,7 @@ global using VTSMASTER.Server.Services.OrderService;
 global using VTSMASTER.Server.Services.PaymentService;
 global using VTSMASTER.Server.Services.AddressService;
 global using VTSMASTER.Server.Services.ProductTypeService;
+global using VTSMASTER.Server.Services.CarouselService;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
+builder.Services.AddScoped<ICarousel, Carousel>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     { 

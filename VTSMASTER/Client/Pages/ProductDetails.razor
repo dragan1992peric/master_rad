@@ -25,7 +25,7 @@ else
 		</div>
 		<div class="media-body">
 			<h2 class="mb-0" id="dodatak2">@product.Title</h2>
-			<p>@product.Description</p>
+			<p>@konvertovano</p>
 			@if(product.Variants != null && product.Variants.Count > 1)
 			{
 				<div>
@@ -57,6 +57,7 @@ else
 @code {
 	private Product? product = null;
 	private string message = string.Empty;
+	MarkupString konvertovano;
 
 	private int currentTypeId = 1;
 
@@ -77,6 +78,8 @@ else
 			if(product.Variants.Count > 0)
 			{
 				currentTypeId = product.Variants[0].ProductTypeId;
+				string zakonvertovanje = product.Description.ToString();
+				konvertovano = new MarkupString(zakonvertovanje);
 			}
 		}
 	}
