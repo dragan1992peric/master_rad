@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using MimeKit.Text;
 using System.Security.Claims;
 
 namespace VTSMASTER.Server.Controllers
@@ -56,6 +60,14 @@ namespace VTSMASTER.Server.Controllers
 			}
 
 			return Ok(responce);
+		}
+
+		[HttpPost]
+		public IActionResult SentEmail(User user)
+		{
+			_authService.SendEmail(user);
+
+			return Ok();
 		}
 	}
 }

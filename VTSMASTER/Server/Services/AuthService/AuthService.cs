@@ -1,7 +1,11 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using MailKit.Security;
+using Microsoft.IdentityModel.Tokens;
+using MimeKit.Text;
+using MimeKit;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using MailKit.Net.Smtp;
 
 namespace VTSMASTER.Server.Services.AuthService
 {
@@ -63,6 +67,7 @@ namespace VTSMASTER.Server.Services.AuthService
 
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync();
+			SendEmail(user);
 
 			return new ServiceResponse<int> { Data = user.Id, Message = "Регистрација УСПЕЛА!" };
 		}
@@ -148,5 +153,20 @@ namespace VTSMASTER.Server.Services.AuthService
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
-    }
+
+		public void SendEmail(User user)
+		{
+			var email = new MimeMessage();
+			email.From.Add(MailboxAddress.Parse("elijah.harber87@ethereal.email"));
+			email.To.Add(MailboxAddress.Parse(user.Email));
+			email.Subject = "Честитамо на успешној регистрацији!! БРАВОО!!!!!!";
+			email.Body = new TextPart(TextFormat.Html) { Text = "Честитамо! ти си наш нови:" + user.Role };
+
+			using var smtp = new SmtpClient();
+			smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
+			smtp.Authenticate("elijah.harber87@ethereal.email", "yywfzv2Aaer1XamKdz");
+			smtp.Send(email);
+			smtp.Disconnect(true); ;
+		}
+	}
 }
