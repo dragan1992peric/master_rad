@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using MimeKit.Text;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace VTSMASTER.Server.Controllers
 {
@@ -14,9 +15,11 @@ namespace VTSMASTER.Server.Controllers
 	public class AuthController : ControllerBase
 	{
 		private readonly IAuthService _authService;
-		public AuthController(IAuthService authService)
+		private readonly DataContext _context;
+		public AuthController(IAuthService authService, DataContext context)
 		{
 			_authService = authService;
+			_context = context;
 		}
 
 		[HttpPost("register")]
@@ -68,6 +71,63 @@ namespace VTSMASTER.Server.Controllers
 			_authService.SendEmail(user);
 
 			return Ok();
+		}
+
+		[HttpGet ("verify")]
+		public async Task<IActionResult> Verify(string token)
+		{
+			var user = await _authService.Verify(token);
+			if(user == null)
+			{
+				return BadRequest("Invalid token");
+			}
+			user.VerifiedAt = DateTime.Now;
+			await _context.SaveChangesAsync();
+
+			return Ok("Korisnik verifikovan");
+		}
+
+		[HttpPost("forgot-password")]
+		public async Task<IActionResult> ForgotPassword(string email)
+		{
+			var user = await _authService.ForgotPassword(email);
+			if (user == null)
+			{
+				return BadRequest("Invalid user");
+			}
+			user.PasswordResetTopken = _authService.CreateRandomToken();
+			user.ResetTokenExpires = DateTime.Now.AddDays(1);
+			await _context.SaveChangesAsync();
+
+			return Ok("Poslat token za reset sifre");
+		}
+		private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+		{
+			using (var hmac = new HMACSHA512())
+			{
+				passwordSalt = hmac.Key;
+				passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+			}
+		}
+
+		[HttpPost("reset-password")]
+		public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+		{
+			var user = await _authService.ResetPassword(request);
+			if (user == null || user.ResetTokenExpires < DateTime.Now)
+			{
+				return BadRequest("Invalid token");
+			}
+
+			CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+			user.PasswordHash = passwordHash;
+			user.PasswordSalt = passwordSalt;
+			user.PasswordResetTopken = null;
+			user.ResetTokenExpires = null;
+
+			await _context.SaveChangesAsync();
+
+			return Ok("Uspesno resetovana sifra");
 		}
 	}
 }

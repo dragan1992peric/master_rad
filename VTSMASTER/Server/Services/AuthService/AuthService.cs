@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Mvc;
 
 namespace VTSMASTER.Server.Services.AuthService
 {
@@ -64,6 +65,7 @@ namespace VTSMASTER.Server.Services.AuthService
 
 			user.PasswordHash = passwordHash;
 			user.PasswordSalt = passwordSalt;
+			user.VerificationToken = CreateRandomToken();
 
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync();
@@ -153,6 +155,18 @@ namespace VTSMASTER.Server.Services.AuthService
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
+		public async Task<User> Verify(string token)
+		{
+			return await _context.Users.FirstOrDefaultAsync(u => u.VerificationToken == token);
+		}
+		public async Task<User> ForgotPassword(string email)
+		{
+			return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+		}
+		public async Task<User> ResetPassword(ResetPasswordRequest request)
+		{
+			return await _context.Users.FirstOrDefaultAsync(u => u.PasswordResetTopken == request.Token);
+		}
 
 		public void SendEmail(User user)
 		{
@@ -160,13 +174,18 @@ namespace VTSMASTER.Server.Services.AuthService
 			email.From.Add(MailboxAddress.Parse("elijah.harber87@ethereal.email"));
 			email.To.Add(MailboxAddress.Parse(user.Email));
 			email.Subject = "Честитамо на успешној регистрацији!! БРАВОО!!!!!!";
-			email.Body = new TextPart(TextFormat.Html) { Text = "Честитамо! ти си наш нови:" + user.Role };
+			email.Body = new TextPart(TextFormat.Html) { Text = "Честитамо! ти си наш нови:" + user.Role + "tvoj link za verifikaciju je https://localhost:7081/api/Auth/verify?token="+user.VerificationToken };
 
 			using var smtp = new SmtpClient();
 			smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
 			smtp.Authenticate("elijah.harber87@ethereal.email", "yywfzv2Aaer1XamKdz");
 			smtp.Send(email);
 			smtp.Disconnect(true); ;
+		}
+
+		public string CreateRandomToken()
+		{
+			return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
 		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿namespace VTSMASTER.Server.Services.AuthService
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace VTSMASTER.Server.Services.AuthService
 {
 	public interface IAuthService
 	{
@@ -9,6 +11,10 @@
 		int GetUserId();
 		string GetUserEmail();
 		Task<User> GetUserByEmail(string email);
+		Task<User> Verify(string token);
+		Task<User> ForgotPassword(string email);
+		Task<User> ResetPassword(ResetPasswordRequest request);
 		void SendEmail(User user);
+		string CreateRandomToken();
 	}
 }
