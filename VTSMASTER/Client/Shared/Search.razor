@@ -27,6 +27,7 @@
 
 @code {
 	private string searchText = string.Empty;
+	private int brojPoStrani = 5;
 	private List<string> suggestions = new List<string>();
 	protected ElementReference searchInput;
 
@@ -40,7 +41,7 @@
 
 	public void SearchProducts()
 	{
-		NavigationManager.NavigateTo($"search/{searchText}/1");
+		NavigationManager.NavigateTo($"search/{searchText}/{brojPoStrani}/1");
 	}
 
 	public async Task HandleSearch(KeyboardEventArgs args)

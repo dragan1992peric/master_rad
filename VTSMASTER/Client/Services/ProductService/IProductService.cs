@@ -10,10 +10,11 @@ namespace VTSMASTER.Client.Services.ProductService
         string Message { get; set; }
         int CurrentPage { get; set; }
         int PageCount { get; set; }
+        int BrojPoStrani { get; set; }
         string LastSearchText { get; set; }
         Task GetProducts(string? categoryUrl = null);
         Task<ServiceResponse<Product>> GetProduct(int productId);
-        Task SearchProducts(string searchText, int page);
+        Task SearchProducts(string searchText, int brojPoStrani, int page);
         Task<List<string>> GetProductSearchSuggestions(string searchText);
         Task GetAdminProducts();
         Task<Product> CreateProduct(Product product);

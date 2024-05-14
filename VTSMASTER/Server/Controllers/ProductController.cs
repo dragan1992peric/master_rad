@@ -64,10 +64,10 @@ namespace VTSMASTER.Server.Controllers
             return Ok(result);
         }
 
-		[HttpGet("search/{searchText}/{page}")]
-		public async Task<ActionResult<ServiceResponse<ProductSearchResult>>> SearchProducts(string searchText, int page = 1)
+		[HttpGet("search/{searchText}/{brojPoStrani}/{page}")]
+		public async Task<ActionResult<ServiceResponse<ProductSearchResult>>> SearchProducts(string searchText, int brojPoStrani, int page = 1)
 		{
-			var result = await _productService.SearchProducts(searchText, page);
+			var result = await _productService.SearchProducts(searchText,brojPoStrani, page);
 			return Ok(result);
 		}
 

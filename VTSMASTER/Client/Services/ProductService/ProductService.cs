@@ -13,6 +13,7 @@ namespace VTSMASTER.Client.Services.ProductService
         public string Message { get; set; } = "Loading products...";
         public int CurrentPage { get; set; } = 1;
         public int PageCount { get; set; } = 0;
+        public int BrojPoStrani { get; set; }
         public string LastSearchText { get; set; } = string.Empty;
         public List<Product> AdminProducts { get; set; }
 
@@ -69,16 +70,18 @@ namespace VTSMASTER.Client.Services.ProductService
             return result.Data;
 		}
 
-		public async Task SearchProducts(string searchText, int page)
+		public async Task SearchProducts(string searchText, int brojPoStrani, int page)
 		{
-            var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResult>>($"api/product/search/{searchText}/{page}");
+            var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResult>>($"api/product/search/{searchText}/{brojPoStrani}/{page}");
             if(result != null && result.Data != null)
             {
                 Products = result.Data.Products;
                 CurrentPage = result.Data.CurrentPage;
                 PageCount = result.Data.Pages;
                 LastSearchText = searchText;
-			}
+                BrojPoStrani = brojPoStrani;
+
+            }
                 
             if (Products.Count == 0) Message = "sipak bato moj";
             ProductsChanged?.Invoke();

@@ -161,18 +161,17 @@
             return new ServiceResponse<List<string>> { Data = result };
 		}
 
-		public async Task<ServiceResponse<ProductSearchResult>> SearchProducts(string searchText, int page)
+		public async Task<ServiceResponse<ProductSearchResult>> SearchProducts(string searchText, int brojPoStrani, int page)
 		{
-            var pageResults = 2f;
-            var pageCount = Math.Ceiling((await FindProductsBySearchText(searchText)).Count / pageResults);
+            var pageCount = (await FindProductsBySearchText(searchText)).Count / brojPoStrani;
             var products = await _context.Products
 							.Where(p => p.Title.ToLower().Contains(searchText.ToLower()) ||
 							    p.Description.ToLower().Contains(searchText.ToLower()) && 
                                 p.Visible && !p.Deleted)
 							.Include(p => p.Variants)
                             .Include(p => p.Image)
-                            .Skip((page - 1) * (int)pageResults)
-                            .Take((int)pageResults)
+                            .Skip((page - 1) * (int)brojPoStrani)
+                            .Take((int)brojPoStrani)
                             .ToListAsync();
 
 			var responce = new ServiceResponse<ProductSearchResult>
@@ -181,7 +180,8 @@
                 {
                     Products = products,
                     CurrentPage = page,
-                    Pages = (int)pageCount
+                    Pages = (int)pageCount,
+                    BrojPoStrani = brojPoStrani
                 }
 			};
 			return responce;

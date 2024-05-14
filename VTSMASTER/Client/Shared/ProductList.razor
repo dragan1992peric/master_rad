@@ -35,16 +35,25 @@ else
         </li>
     }
     </ul>
+
+    <select @onchange="HandleSelectChange">
+        <option selected value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+    </select>
+
     for(var i = 1; i <= ProductService.PageCount; i++)
     {
         <a class="btn 
                  @(i == ProductService.CurrentPage ? "btn-info" : "btn-outline-info") 
                  page-selection"
-                 href="/search/@ProductService.LastSearchText/@i">@i</a>
+                 href="/search/@ProductService.LastSearchText/@broj/@i">@i</a>
     }
 }
 
 @code {
+    protected int broj;
     protected override void OnInitialized()
     {
         ProductService.ProductsChanged += StateHasChanged;
@@ -53,6 +62,12 @@ else
     public void Dispose()
     {
         ProductService.ProductsChanged -= StateHasChanged;
+    }
+
+    private void HandleSelectChange(ChangeEventArgs e)
+    {
+        broj = Convert.ToInt32(e.Value);
+        ProductService.SearchProducts(ProductService.LastSearchText, broj, 1);
     }
 
     private string GetPriceText(Product product)
