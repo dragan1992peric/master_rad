@@ -5,6 +5,8 @@
 		Task<ServiceResponse<int>> Register(UserRegister request);
 		Task<ServiceResponse<string>> Login(UserLogin request);
 		Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request);
+		Task<ServiceResponse<bool>> ResetPassword(ResetPasswordRequest request);
 		Task<bool> IsUserAuthenticated();
+		Task<User> ForgotPassword(string email);
 	}
 }

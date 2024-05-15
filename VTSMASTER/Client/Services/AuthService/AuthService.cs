@@ -15,8 +15,13 @@
 			var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
 			return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
 		}
+		public async Task<User> ForgotPassword(string email)
+		{
+			var result = await _http.PostAsJsonAsync("api/auth/forgot-password", email);
+			return await result.Content.ReadFromJsonAsync<User>();
+		}
 
-        public async Task<bool> IsUserAuthenticated()
+		public async Task<bool> IsUserAuthenticated()
         {
 			return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
         }
@@ -31,6 +36,12 @@
 		{
 			var result = await _http.PostAsJsonAsync("api/auth/register", request);
 			return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+		}
+
+		public async Task<ServiceResponse<bool>> ResetPassword(ResetPasswordRequest request)
+		{
+			var result = await _http.PostAsJsonAsync("api/auth/reset-password", request.Token);
+			return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
 		}
 	}
 }

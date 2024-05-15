@@ -15,6 +15,7 @@ namespace VTSMASTER.Server.Services.AuthService
 		Task<User> ForgotPassword(string email);
 		Task<User> ResetPassword(ResetPasswordRequest request);
 		void SendEmail(User user);
+		void SendEmailForgot(User user);
 		string CreateRandomToken();
 	}
 }

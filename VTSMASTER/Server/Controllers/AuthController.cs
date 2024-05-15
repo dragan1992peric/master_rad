@@ -98,6 +98,7 @@ namespace VTSMASTER.Server.Controllers
 			user.PasswordResetTopken = _authService.CreateRandomToken();
 			user.ResetTokenExpires = DateTime.Now.AddDays(1);
 			await _context.SaveChangesAsync();
+			_authService.SendEmailForgot(user);
 
 			return Ok("Poslat token za reset sifre");
 		}

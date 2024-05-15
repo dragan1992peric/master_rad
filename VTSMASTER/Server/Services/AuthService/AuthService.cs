@@ -171,14 +171,28 @@ namespace VTSMASTER.Server.Services.AuthService
 		public void SendEmail(User user)
 		{
 			var email = new MimeMessage();
-			email.From.Add(MailboxAddress.Parse("elijah.harber87@ethereal.email"));
+			email.From.Add(MailboxAddress.Parse("eveline.gerhold97@ethereal.email"));
 			email.To.Add(MailboxAddress.Parse(user.Email));
 			email.Subject = "Честитамо на успешној регистрацији!! БРАВОО!!!!!!";
 			email.Body = new TextPart(TextFormat.Html) { Text = "Честитамо! ти си наш нови:" + user.Role + "tvoj link za verifikaciju je https://localhost:7081/api/Auth/verify?token="+user.VerificationToken };
 
 			using var smtp = new SmtpClient();
 			smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
-			smtp.Authenticate("elijah.harber87@ethereal.email", "yywfzv2Aaer1XamKdz");
+			smtp.Authenticate("eveline.gerhold97@ethereal.email", "rDPtME7vXykrgd6Rks");
+			smtp.Send(email);
+			smtp.Disconnect(true); ;
+		}
+		public void SendEmailForgot(User user)
+		{
+			var email = new MimeMessage();
+			email.From.Add(MailboxAddress.Parse("eveline.gerhold97@ethereal.email"));
+			email.To.Add(MailboxAddress.Parse(user.Email));
+			email.Subject = "Жао нам је што сте заборавили лозинку";
+			email.Body = new TextPart(TextFormat.Html) { Text = "Tvoj link za ресетовање лозинке je https://localhost:7081/api/Auth/reset-password?token=" + user.PasswordResetTopken };
+
+			using var smtp = new SmtpClient();
+			smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
+			smtp.Authenticate("eveline.gerhold97@ethereal.email", "rDPtME7vXykrgd6Rks");
 			smtp.Send(email);
 			smtp.Disconnect(true); ;
 		}

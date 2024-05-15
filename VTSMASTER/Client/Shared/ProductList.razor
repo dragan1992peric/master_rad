@@ -7,6 +7,15 @@
 }
 else
 {
+    <div>
+        <p>Одабери број артикала по страни</p>
+        <select @onchange="HandleSelectChange">
+            <option selected value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+    </div>
 <ul class="list-unstyled">
     @foreach (var product in ProductService.Products)
     {
@@ -35,13 +44,8 @@ else
         </li>
     }
     </ul>
+    
 
-    <select @onchange="HandleSelectChange">
-        <option selected value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-    </select>
 
     for(var i = 1; i <= ProductService.PageCount; i++)
     {
