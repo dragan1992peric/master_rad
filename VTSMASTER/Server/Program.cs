@@ -53,6 +53,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMyOrigin",
+        builder => builder.WithOrigins("https://localhost:7085") 
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -76,7 +84,7 @@ app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-
+app.UseCors("AllowMyOrigin");
 app.UseRouting();
 
 app.UseAuthentication();
